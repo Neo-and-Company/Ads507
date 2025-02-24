@@ -1,0 +1,14 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
