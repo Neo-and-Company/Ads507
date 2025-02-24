@@ -12,16 +12,14 @@ def get_csv_from_github(filename: str) -> pd.DataFrame:
     :param filename: The name of the CSV file (e.g., "Customer.csv").
     :return: A DataFrame containing the CSV data.
     """
-
-    # Updated base_url to remove '%20' and use underscore if your GitHub folder is named 'FinalSQL_Pipeline'
-    base_url = "https://raw.githubusercontent.com/Neo-and-Company/Ads507/main/FinalSQL_Pipeline/data/"
+    base_url = "https://raw.githubusercontent.com/Neo-and-Company/Ads507/main/FinalSQL%20Pipeline/data/"
     url = base_url + filename
 
     # Perform an HTTP GET request
     response = requests.get(url)
     response.raise_for_status()  # raise an error if the request failed
 
-    # Parse the response text as a tab-delimited CSV (change sep if your CSV is comma-delimited)
+    # Parse the response text as a tab-delimited CSV
     df = pd.read_csv(StringIO(response.text), sep="\t")
     return df
 
