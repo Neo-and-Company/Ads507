@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "db_name" {
   type    = string
-  default = "AdventureSales"
+  default = "AdventurePurchasing"
 }
 
 variable "db_user" {
