@@ -1,25 +1,47 @@
 # src/transform/transform.py
+
 import pandas as pd
 
-def transform_vendor(df: pd.DataFrame) -> pd.DataFrame:
+def transform_employee(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Employee.csv -> Employee table
+    Columns match the MySQL schema: EmployeeID, FirstName, LastName, etc.
+    """
     df.columns = [
-        "VendorID", "BusinessEntityID", "AccountNumber", "Name",
-        "CreditRating", "PreferredVendorStatus", "ActiveFlag",
-        "PurchasingWebServiceURL", "ModifiedDate"
+        "EmployeeID", "FirstName", "LastName", "JobTitle",
+        "HireDate", "ModifiedDate"
+    ]
+    df.fillna(0, inplace=True)
+    print("Employee transformed successfully.")
+    return df
+
+def transform_vendor(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Vendor.csv -> Vendor table
+    """
+    df.columns = [
+        "VendorID", "Name", "AccountNumber", "PreferredVendorStatus",
+        "ModifiedDate"
     ]
     df.fillna(0, inplace=True)
     print("Vendor transformed successfully.")
     return df
 
 def transform_shipmethod(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    ShipMethod.csv -> ShipMethod table
+    """
     df.columns = [
-        "ShipMethodID", "Name", "ShipBase", "ShipRate", "rowguid", "ModifiedDate"
+        "ShipMethodID", "Name", "ShipBase", "ShipRate", "ModifiedDate"
     ]
     df.fillna(0, inplace=True)
     print("ShipMethod transformed successfully.")
     return df
 
 def transform_product(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Product.csv -> Product table
+    """
     df.columns = [
         "ProductID", "Name", "ProductNumber", "StandardCost",
         "ListPrice", "ModifiedDate"
@@ -29,20 +51,26 @@ def transform_product(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def transform_purchaseorderheader(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    PurchaseOrderHeader.csv -> PurchaseOrderHeader table
+    """
     df.columns = [
-        "PurchaseOrderID", "RevisionNumber", "Status", "EmployeeID",
-        "VendorID", "ShipMethodID", "OrderDate", "ShipDate", "SubTotal",
-        "TaxAmt", "Freight", "TotalDue", "ModifiedDate"
+        "PurchaseOrderID", "EmployeeID", "VendorID", "ShipMethodID",
+        "OrderDate", "ShipDate", "SubTotal", "TaxAmt", "Freight",
+        "TotalDue", "ModifiedDate"
     ]
     df.fillna(0, inplace=True)
     print("PurchaseOrderHeader transformed successfully.")
     return df
 
 def transform_purchaseorderdetail(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    PurchaseOrderDetail.csv -> PurchaseOrderDetail table
+    """
     df.columns = [
-        "PurchaseOrderID", "PurchaseOrderDetailID", "DueDate", "OrderQty",
-        "ProductID", "UnitPrice", "LineTotal", "ReceivedQty",
-        "RejectedQty", "StockedQty", "ModifiedDate"
+        "PurchaseOrderDetailID", "PurchaseOrderID", "ProductID", "OrderQty",
+        "UnitPrice", "LineTotal", "ReceivedQty", "RejectedQty",
+        "StockedQty", "ModifiedDate"
     ]
     df.fillna(0, inplace=True)
     print("PurchaseOrderDetail transformed successfully.")
@@ -50,13 +78,16 @@ def transform_purchaseorderdetail(df: pd.DataFrame) -> pd.DataFrame:
 
 def transform_all_data(dataframes: dict) -> dict:
     """
-    Loops through the dictionary of DataFrames, calling the correct
-    transform function for each CSV. Returns a dict of transformed DataFrames.
+    Loops through the dictionary of DataFrames (keyed by CSV filename),
+    calling the correct transform function for each CSV.
+    Returns a dict of transformed DataFrames.
     """
     transformed = {}
 
     for filename, df in dataframes.items():
-        if filename == "Vendor.csv":
+        if filename == "Employee.csv":
+            transformed[filename] = transform_employee(df)
+        elif filename == "Vendor.csv":
             transformed[filename] = transform_vendor(df)
         elif filename == "ShipMethod.csv":
             transformed[filename] = transform_shipmethod(df)
@@ -67,8 +98,6 @@ def transform_all_data(dataframes: dict) -> dict:
         elif filename == "PurchaseOrderDetail.csv":
             transformed[filename] = transform_purchaseorderdetail(df)
         else:
-            # If you have additional tables/CSVs, add more elif blocks
-            # or just leave as-is to skip specialized transforms.
             print(f"No transform function for {filename}, leaving as-is.")
             transformed[filename] = df
 

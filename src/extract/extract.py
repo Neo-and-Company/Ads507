@@ -1,42 +1,35 @@
-# src/extract/extract.py
-
 import requests
 import pandas as pd
 from io import StringIO
 
 def fetch_csv_from_github(filename: str) -> pd.DataFrame:
     """
-    Fetches a tab-delimited CSV from your GitHub repository's 'raw' URL
+    Fetches a tab-delimited CSV from your GitHub AdventureWorks507 data folder
     and returns a pandas DataFrame.
-
-    :param filename: The name of the CSV file (e.g., "Product.csv").
-    :return: A DataFrame containing the CSV data.
     """
-    # Adjust 'base_url' if your data folder is in a different path
-    # e.g. "https://raw.githubusercontent.com/YourUsername/YourRepo/main/data/"
-    base_url = "https://raw.githubusercontent.com/Neo-and-Company/Ads507/main/data/"
+    base_url = "https://media.githubusercontent.com/media/Neo-and-Company/Ads507/refs/heads/main/data/"
     url = base_url + filename
-
     response = requests.get(url)
-    response.raise_for_status()  # raise an error if the request failed
+    response.raise_for_status()  # raises an error if the download fails
 
-    # If your CSV is comma-delimited, remove sep="\t" or replace with sep=","
-    df = pd.read_csv(StringIO(response.text), sep="\t")
+    # If your CSVs are actually comma-delimited, remove delimiter='\t'
+    df = pd.read_csv(StringIO(response.text), delimiter='\t')
     return df
 
-# Update this list to your ACTUAL CSV filenames in the 'data' folder
+# List all the CSV filenames you want to extract
 CSV_FILES = [
-    "Product.csv",
-    "Vendor.csv",
-    "ShipMethod.csv",
+    "Employee.csv",
+    "PurchaseOrderDetail.csv",
     "PurchaseOrderHeader.csv",
-    "PurchaseOrderDetail.csv"
+    "ShipMethod.csv",
+    "Product.csv",
+    "Employee.csv"
 ]
 
 def extract_all_data() -> dict:
     """
     Fetches each CSV from GitHub and stores them in a dictionary of DataFrames.
-    Returns a dict: { 'Product.csv': DataFrame, 'Vendor.csv': DataFrame, ... }
+    Returns a dict: { 'Customer.csv': DataFrame, 'Employee.csv': DataFrame, ... }
     """
     dataframes = {}
     for file_name in CSV_FILES:

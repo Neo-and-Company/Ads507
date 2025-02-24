@@ -1,5 +1,3 @@
-# src/load/load.py
-
 import os
 import pandas as pd
 from sqlalchemy import create_engine
@@ -11,7 +9,7 @@ def load_data_to_mysql(df: pd.DataFrame, table_name: str) -> None:
     user = os.environ.get("RDS_USER", "Ads507")
     password = os.environ.get("RDS_PASS", "Gabrielleo24")
     host = os.environ.get("RDS_HOST", "team-shared-mysql.cjwa24wuisi8.us-east-1.rds.amazonaws.com")
-    dbname = os.environ.get("RDS_DBNAME", "AdventureSales1")
+    dbname = os.environ.get("RDS_DBNAME", "AdventurePurchasing")
 
     engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}/{dbname}")
     
