@@ -18,7 +18,7 @@
 
 ## 2. Source Datasets
 
-### 2.1. Dataset Origin & Rationale
+#### 2.1. Dataset Origin & Rationale
 
 We use AdventureWorks CSV files, which are a well-known sample dataset provided by Microsoft. The dataset includes tables such as:
 - Employee.csv
@@ -41,14 +41,14 @@ We use AdventureWorks CSV files, which are a well-known sample dataset provided 
 
 ## 3. Pipeline Output
 
-### 3.1. What the Pipeline Produces
+#### 3.1. What the Pipeline Produces
 
 Post-ETL execution, cleaned and transformed data are loaded into MySQL, enabling the following reports:
 - **Weekly Sales:** Revenue, order counts, average sale values.
 - **Purchase Order Analysis:** Vendor-product relations, spending totals, order statuses.
 - **Employee & Sales Performance:** Comparison of SalesTarget vs. actual Sales.
 
-### 3.2. Benefits of the Pipeline
+#### 3.2. Benefits of the Pipeline
 
 - **Business Insights:** Informs decisions on inventory, vendor management, and employee performance.
 - **Automation:** Ensures up-to-date metrics through scheduled reporting.
@@ -129,7 +129,7 @@ Post-ETL execution, cleaned and transformed data are loaded into MySQL, enabling
 
 ## 6. System Considerations and Future Improvements
 
-### 6.1. Scalability
+#### 6.1. Scalability
 
 - **Current Approach:**  
   A single MySQL instance with Python-based ETL handles moderate data volumes.
@@ -139,19 +139,20 @@ Post-ETL execution, cleaned and transformed data are loaded into MySQL, enabling
   - Migrating to distributed databases (e.g., Amazon Redshift, BigQuery).
   - Implementing chunk-based or incremental loading to optimize performance.
 
-### 6.2. Security
+#### 6.2. Security
+	- AWS RDS & RDS Proxy:
+	- The RDS Proxy can manage database credentials via AWS Secrets Manager, limiting direct access to the DB.
+	•	Connections can be IAM-authenticated or use token-based security.
+	•	Token-Based Access:
+	•	The application can request temporary credentials/tokens from IAM, reducing the need to store static passwords.
+	•	Network:
+	•	Deploy RDS in a private subnet; only the proxy endpoint is exposed to the application.
+	•	Use security groups to restrict inbound connections to known IPs or VPC resources.
+	•	Encryption:
+	•	At Rest: Use KMS to encrypt RDS data.
+	•	In Transit: Enforce SSL/TLS connections between the application and the proxy.
 
-- **Current Measures:**  
-  - Use of environment variables or secrets management for credentials.
-  - MySQL behind a firewall/security group.
-  - Enforcing SSL/TLS for connections.
-
-- **Future Enhancements:**  
-  - Deploy MySQL in a private subnet to restrict public access.
-  - Implement role-based access controls (e.g., read-only vs. admin).
-  - Introduce audit logging for critical database operations.
-
-### 6.3. Extensibility
+#### 6.3. Extensibility
 
 - **Adding New Tables:**  
   The schema is flexible and can integrate additional CSV inputs.
@@ -164,18 +165,20 @@ Post-ETL execution, cleaned and transformed data are loaded into MySQL, enabling
 
 ## 7. Conclusion
 
-This design document outlines a robust ETL pipeline that:
-1. Extracts AdventureWorks CSV data.
-2. Transforms and cleans data using Python.
-3. Loads the final dataset into MySQL.
-4. Generates automated reports covering sales, purchase orders, employee metrics, etc.
+This design document describes a robust ETL pipeline that:
+	1.	Extracts AdventureWorks CSV data.
+	2.	Transforms it via Python scripts.
+	3.	Loads final tables into AWS RDS (MySQL) behind an RDS Proxy.
+	4.	Secures credentials using token-based access and AWS Secrets Manager.
+	5.	Produces automated reports on sales, purchase orders, employee metrics, etc.
 
-**Strengths:**  
-- Simple and replicable design
-- Automated reporting reduces manual processing  
+**Strengths:**
+	•	AWS-based deployment with RDS Proxy improves security and performance.
+	•	Token-based authentication removes the need for static credentials.
+	•	Pipeline is modular, allowing easy extension.
 
-**Areas for Improvement:**  
-- Enhanced scalability for high data volumes.
-- Advanced security practices for risk mitigation.
+**Areas for Improvement:**
+	•	Scaling for very large datasets may require read replicas or a data warehouse approach.
+	•	Additional security layers (audit logging, stricter IAM roles) can further reduce risk.
 
 This pipeline meets typical business intelligence needs and is structured for future expansion and scalability.

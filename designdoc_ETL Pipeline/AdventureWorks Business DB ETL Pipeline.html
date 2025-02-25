@@ -7516,62 +7516,79 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Author: Gabriel Mancillas, Duy Nguyen, Jorge Roldan.
-Date: Feb 24, 2025</p>
-<h1 id="AdventureWorks-Business-DB-ETL-Pipeline-%E2%80%93-Design-Document">AdventureWorks Business DB ETL Pipeline – Design Document<a class="anchor-link" href="#AdventureWorks-Business-DB-ETL-Pipeline-%E2%80%93-Design-Document">¶</a></h1><h2 id="1.-GitHub-Repository">1. GitHub Repository<a class="anchor-link" href="#1.-GitHub-Repository">¶</a></h2><p>GitHub Link: [Your GitHub Repo URL Here]
-(Example: <a href="https://github.com/Neo-and-Company/Ads507">https://github.com/Neo-and-Company/Ads507</a>)</p>
-<p>This repository contains all source code (Python scripts for Extract, Transform, Load), the database schema (.sql files), and documentation for deploying the pipeline.</p>
-<h2 id="2.-Source-Datasets">2. Source Datasets<a class="anchor-link" href="#2.-Source-Datasets">¶</a></h2><h4 id="2.1.-Dataset-Origin-&amp;-Rationale">2.1. Dataset Origin &amp; Rationale<a class="anchor-link" href="#2.1.-Dataset-Origin-&amp;-Rationale">¶</a></h4><p>We use AdventureWorks CSV files (commonly available as a sample database from Microsoft). The CSVs include realistic tables such as:
-•	Employee.csv
-•	Vendor.csv
-•	ShipMethod.csv
-•	Product.csv
-•	PurchaseOrderHeader.csv
-•	PurchaseOrderDetail.csv
-•	Sales.csv (optional if you’re simulating sales)
-•	SalesTarget.csv (for monthly/quarterly targets)
-•	Customer.csv (for customer info)
-•	WeeklySalesSummary.csv (aggregated data if needed)</p>
-<p>Why This Dataset?
-•	Realistic Business Structure: AdventureWorks simulates a manufacturing and sales environment with employees, products, vendors, purchase orders, etc.
-•	Multiple Tables &amp; Relationships: Perfect for practicing SQL joins, foreign keys, and typical data warehouse or reporting tasks.
-•	Widely Known: AdventureWorks is a standard example in the SQL community, making it easy to demonstrate ETL best practices.</p>
-<h2 id="3.-Output-of-the-Pipeline">3. Output of the Pipeline<a class="anchor-link" href="#3.-Output-of-the-Pipeline">¶</a></h2><h4 id="3.1.-What-the-Pipeline-Produces">3.1. What the Pipeline Produces<a class="anchor-link" href="#3.1.-What-the-Pipeline-Produces">¶</a></h4><p>After running the ETL scripts, we load cleaned and transformed data into MySQL. Some common reports or outputs include:
-•	Weekly Sales: Summaries of total revenue, total orders, average sale value, etc.
-•	Purchase Order Analysis: Which vendors supply which products, total spending per vendor, order statuses.
-•	Employee &amp; Sales Performance: Using SalesTarget vs. actual Sales data to see which employees meet or exceed quotas.</p>
-<h4 id="3.2.-Why-the-Output-is-Useful">3.2. Why the Output is Useful<a class="anchor-link" href="#3.2.-Why-the-Output-is-Useful">¶</a></h4><pre><code>•	Business Insights: Helps managers make decisions on inventory, vendor negotiations, and employee performance.
-•	Automation: Weekly or daily reports reduce manual effort, ensuring stakeholders always have up-to-date metrics.
-•	Scalability: The pipeline design can be extended to other tables or additional data sources if the business grows.</code></pre>
-<h2 id="4.-Architecture-Diagram">4. Architecture Diagram<a class="anchor-link" href="#4.-Architecture-Diagram">¶</a></h2><p>Below is a simplified architecture showing how data flows from CSV to MySQL and how it’s used for reporting.</p>
-<pre><code>     ┌──────────────┐
-     │ CSV Datasets  │
-     │(Employee.csv, │
-     │ Vendor.csv,   │
-     │ etc.)         │
-     └─────┬─────────┘
-           │
- (Extract) │
+<h1 id="AdventureWorks-Business-DB-ETL-Pipeline-%E2%80%93-Design-Document">AdventureWorks Business DB ETL Pipeline – Design Document<a class="anchor-link" href="#AdventureWorks-Business-DB-ETL-Pipeline-%E2%80%93-Design-Document">¶</a></h1><p><strong>Authors:</strong> Gabriel Mancillas, Duy Nguyen, Jorge Roldan<br/>
+<strong>Date:</strong> Feb 24, 2025</p>
+<hr/>
+<h2 id="1.-Repository-Overview">1. Repository Overview<a class="anchor-link" href="#1.-Repository-Overview">¶</a></h2><ul>
+<li><strong>GitHub Repository:</strong><br/>
+<a href="https://github.com/Neo-and-Company/Ads507">Your GitHub Repo URL Here</a><br/>
+This repository contains:<ul>
+<li>Python scripts for Extract, Transform, Load (ETL)</li>
+<li>Database schema (.sql files)</li>
+<li>Documentation for deployment and usage</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<h2 id="2.-Source-Datasets">2. Source Datasets<a class="anchor-link" href="#2.-Source-Datasets">¶</a></h2><h4 id="2.1.-Dataset-Origin-&amp;-Rationale">2.1. Dataset Origin &amp; Rationale<a class="anchor-link" href="#2.1.-Dataset-Origin-&amp;-Rationale">¶</a></h4><p>We use AdventureWorks CSV files, which are a well-known sample dataset provided by Microsoft. The dataset includes tables such as:</p>
+<ul>
+<li>Employee.csv</li>
+<li>Vendor.csv</li>
+<li>ShipMethod.csv</li>
+<li>Product.csv</li>
+<li>PurchaseOrderHeader.csv</li>
+<li>PurchaseOrderDetail.csv</li>
+<li>Sales.csv (optional for simulation)</li>
+<li>SalesTarget.csv (monthly/quarterly targets)</li>
+<li>Customer.csv</li>
+<li>WeeklySalesSummary.csv (aggregated data)</li>
+</ul>
+<p><strong>Why Choose AdventureWorks?</strong></p>
+<ul>
+<li><strong>Realistic Business Environment:</strong> Simulates manufacturing, sales, and related processes.</li>
+<li><strong>Rich Relationships:</strong> Ideal for practicing SQL joins, foreign keys, and building data warehouses.</li>
+<li><strong>Standard Example:</strong> Widely recognized in the SQL community.</li>
+</ul>
+<hr/>
+<h2 id="3.-Pipeline-Output">3. Pipeline Output<a class="anchor-link" href="#3.-Pipeline-Output">¶</a></h2><h4 id="3.1.-What-the-Pipeline-Produces">3.1. What the Pipeline Produces<a class="anchor-link" href="#3.1.-What-the-Pipeline-Produces">¶</a></h4><p>Post-ETL execution, cleaned and transformed data are loaded into MySQL, enabling the following reports:</p>
+<ul>
+<li><strong>Weekly Sales:</strong> Revenue, order counts, average sale values.</li>
+<li><strong>Purchase Order Analysis:</strong> Vendor-product relations, spending totals, order statuses.</li>
+<li><strong>Employee &amp; Sales Performance:</strong> Comparison of SalesTarget vs. actual Sales.</li>
+</ul>
+<h4 id="3.2.-Benefits-of-the-Pipeline">3.2. Benefits of the Pipeline<a class="anchor-link" href="#3.2.-Benefits-of-the-Pipeline">¶</a></h4><ul>
+<li><strong>Business Insights:</strong> Informs decisions on inventory, vendor management, and employee performance.</li>
+<li><strong>Automation:</strong> Ensures up-to-date metrics through scheduled reporting.</li>
+<li><strong>Scalability:</strong> Designed to extend with additional tables and data sources.</li>
+</ul>
+<hr/>
+<h2 id="4.-Architecture-Diagram">4. Architecture Diagram<a class="anchor-link" href="#4.-Architecture-Diagram">¶</a></h2><pre><code>         ┌──────────────┐
+         │ CSV Datasets │
+         │(Employee.csv,│
+         │ Vendor.csv,  │
+         │    ...     )│
+         └─────┬────────┘
+               │  (Extract)
+               ▼
+     ┌─────────────────────┐
+     │  Python ETL Scripts │
+     │(extract, transform, │
+     │        load)        │
+     └─────┬───────────────┘
+           │ (Transform/Load)
            ▼
- ┌───────────────────────┐
- │  Python Scripts       │
- │(extract, transform,   │
- │        load)          │
- └─────┬─────────────────┘
-       │ (Transform/Load)
-       ▼
- ┌─────────────────────────┐
- │     MySQL Database      │
- │ (Cleaned, Final Tables) │
- └─────┬───────────────────┘
-       │
-       │ (Query for Reports)
-       ▼
- ┌─────────────────────────┐
- │   Automated Reports     │
- │ (Sales, PO, Employee,   │
- │  Weekly Summaries)      │
- └─────────────────────────┘</code></pre>
+     ┌────────────────────────┐
+     │    MySQL Database      │
+     │ (Cleaned &amp; Final Tables)│
+     └─────┬──────────────────┘
+           │ (Query for Reports)
+           ▼
+     ┌─────────────────────────┐
+     │   Automated Reports     │
+     │ (Sales, PO analysis,    │
+     │  Employee insights)     │
+     └─────────────────────────┘
+</code></pre>
 <hr/>
 <h2 id="5.-Final-Schema-Diagram">5. Final Schema Diagram<a class="anchor-link" href="#5.-Final-Schema-Diagram">¶</a></h2><p><strong>Key Tables and Relationships:</strong></p>
 <ul>
@@ -7621,7 +7638,7 @@ Date: Feb 24, 2025</p>
 </ul>
 <p><em>(If additional relationships or bridging tables are necessary (e.g., for ShipMethod ↔ Product), adjust accordingly.)</em></p>
 <hr/>
-<h2 id="6.-System-Considerations-and-Future-Improvements">6. System Considerations and Future Improvements<a class="anchor-link" href="#6.-System-Considerations-and-Future-Improvements">¶</a></h2><h3 id="6.1.-Scalability">6.1. Scalability<a class="anchor-link" href="#6.1.-Scalability">¶</a></h3><ul>
+<h2 id="6.-System-Considerations-and-Future-Improvements">6. System Considerations and Future Improvements<a class="anchor-link" href="#6.-System-Considerations-and-Future-Improvements">¶</a></h2><h4 id="6.1.-Scalability">6.1. Scalability<a class="anchor-link" href="#6.1.-Scalability">¶</a></h4><ul>
 <li><p><strong>Current Approach:</strong><br/>
 A single MySQL instance with Python-based ETL handles moderate data volumes.</p>
 </li>
@@ -7633,23 +7650,18 @@ A single MySQL instance with Python-based ETL handles moderate data volumes.</p>
 </ul>
 </li>
 </ul>
-<h3 id="6.2.-Security">6.2. Security<a class="anchor-link" href="#6.2.-Security">¶</a></h3><ul>
-<li><p><strong>Current Measures:</strong></p>
-<ul>
-<li>Use of environment variables or secrets management for credentials.</li>
-<li>MySQL behind a firewall/security group.</li>
-<li>Enforcing SSL/TLS for connections.</li>
-</ul>
-</li>
-<li><p><strong>Future Enhancements:</strong></p>
-<ul>
-<li>Deploy MySQL in a private subnet to restrict public access.</li>
-<li>Implement role-based access controls (e.g., read-only vs. admin).</li>
-<li>Introduce audit logging for critical database operations.</li>
-</ul>
-</li>
-</ul>
-<h3 id="6.3.-Extensibility">6.3. Extensibility<a class="anchor-link" href="#6.3.-Extensibility">¶</a></h3><ul>
+<h4 id="6.2.-Security">6.2. Security<a class="anchor-link" href="#6.2.-Security">¶</a></h4><pre><code>- AWS RDS &amp; RDS Proxy:
+- The RDS Proxy can manage database credentials via AWS Secrets Manager, limiting direct access to the DB.
+•	Connections can be IAM-authenticated or use token-based security.
+•	Token-Based Access:
+•	The application can request temporary credentials/tokens from IAM, reducing the need to store static passwords.
+•	Network:
+•	Deploy RDS in a private subnet; only the proxy endpoint is exposed to the application.
+•	Use security groups to restrict inbound connections to known IPs or VPC resources.
+•	Encryption:
+•	At Rest: Use KMS to encrypt RDS data.
+•	In Transit: Enforce SSL/TLS connections between the application and the proxy.</code></pre>
+<h4 id="6.3.-Extensibility">6.3. Extensibility<a class="anchor-link" href="#6.3.-Extensibility">¶</a></h4><ul>
 <li><strong>Adding New Tables:</strong><br/>
 The schema is flexible and can integrate additional CSV inputs.</li>
 <li><strong>Adapting Transformations:</strong><br/>
@@ -7658,25 +7670,20 @@ Python scripts are modular, allowing new transformation functions.</li>
 Possibility to connect with BI dashboards or load data into a data warehouse for advanced analytics.</li>
 </ul>
 <hr/>
-<h2 id="7.-Conclusion">7. Conclusion<a class="anchor-link" href="#7.-Conclusion">¶</a></h2><p>This design document outlines a robust ETL pipeline that:</p>
-<ol>
-<li>Extracts AdventureWorks CSV data.</li>
-<li>Transforms and cleans data using Python.</li>
-<li>Loads the final dataset into MySQL.</li>
-<li>Generates automated reports covering sales, purchase orders, employee metrics, etc.</li>
-</ol>
-<p><strong>Strengths:</strong></p>
-<ul>
-<li>Simple and replicable design</li>
-<li>Automated reporting reduces manual processing</li>
-</ul>
-<p><strong>Areas for Improvement:</strong></p>
-<ul>
-<li>Enhanced scalability for high data volumes.</li>
-<li>Advanced security practices for risk mitigation.</li>
-</ul>
-<p>With these design choices, the pipeline meets typical business needs for automated reporting, while leaving room for future expansion and improvements.</p>
-<p>End of Document</p>
+<h2 id="7.-Conclusion">7. Conclusion<a class="anchor-link" href="#7.-Conclusion">¶</a></h2><p>This design document describes a robust ETL pipeline that:
+1.	Extracts AdventureWorks CSV data.
+2.	Transforms it via Python scripts.
+3.	Loads final tables into AWS RDS (MySQL) behind an RDS Proxy.
+4.	Secures credentials using token-based access and AWS Secrets Manager.
+5.	Produces automated reports on sales, purchase orders, employee metrics, etc.</p>
+<p><strong>Strengths:</strong>
+•	AWS-based deployment with RDS Proxy improves security and performance.
+•	Token-based authentication removes the need for static credentials.
+•	Pipeline is modular, allowing easy extension.</p>
+<p><strong>Areas for Improvement:</strong>
+•	Scaling for very large datasets may require read replicas or a data warehouse approach.
+•	Additional security layers (audit logging, stricter IAM roles) can further reduce risk.</p>
+<p>This pipeline meets typical business intelligence needs and is structured for future expansion and scalability.</p>
 </div>
 </div>
 </div>
