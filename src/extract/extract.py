@@ -6,19 +6,18 @@ from io import StringIO
 
 def fetch_csv_from_github(filename: str) -> pd.DataFrame:
     """
-    Fetches a tab-delimited CSV from your GitHub Ads507 data folder
+    Fetches a CSV from your GitHub Ads507 data folder
     and returns a pandas DataFrame.
 
-    If your CSV files are actually comma-delimited, you can remove
-    the 'delimiter="\\t"' or replace it with the appropriate delimiter.
+    If your CSV files are tab-delimited, change sep to '\\t'.
     """
     base_url = "https://media.githubusercontent.com/media/Neo-and-Company/Ads507/refs/heads/main/data/"
     url = base_url + filename
     response = requests.get(url)
     response.raise_for_status()  # raises an error if the download fails
 
-    # If your CSVs are actually comma-delimited, remove delimiter='\t'
-    df = pd.read_csv(StringIO(response.text), delimiter='\t')
+    # Use sep="," for comma-delimited CSVs
+    df = pd.read_csv(StringIO(response.text), sep=",", header=0)
     return df
 
 # List of CSV filenames to extract from the GitHub data folder
@@ -27,7 +26,6 @@ CSV_FILES = [
     "PurchaseOrderHeader.csv",
     "ShipMethod.csv",
     "Product.csv",
-    "ProductVendor.csv",
     "Vendor.csv"
 ]
 
