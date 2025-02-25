@@ -1,29 +1,36 @@
--- Optional: Drop the old database if you want a clean start
+-- 1) Drop old database (if you want a fresh start)
 DROP DATABASE IF EXISTS business_db;
 
--- Create and select the database
+-- 2) Create and select the database
 CREATE DATABASE IF NOT EXISTS business_db;
 USE business_db;
 
+-- 3) Create Employee table (no FKs)
 CREATE TABLE Employee (
   EmployeeID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   FirstName VARCHAR(50) NOT NULL,
   LastName VARCHAR(50) NOT NULL,
   JobTitle VARCHAR(50) NOT NULL,
   HireDate DATE NOT NULL,
-  ModifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  ModifiedDate DATETIME NOT NULL 
+    DEFAULT CURRENT_TIMESTAMP 
+    ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (EmployeeID)
 ) ENGINE=InnoDB;
 
+-- 4) Create Product table (no FKs)
 CREATE TABLE Product (
   ProductID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   Name VARCHAR(100) NOT NULL,
   ProductNumber VARCHAR(25) NOT NULL UNIQUE,
   ListPrice DECIMAL(10,2) NOT NULL,
-  ModifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  ModifiedDate DATETIME NOT NULL 
+    DEFAULT CURRENT_TIMESTAMP 
+    ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (ProductID)
 ) ENGINE=InnoDB;
 
+-- 5) Create Vendor table (no FKs)
 CREATE TABLE Vendor (
   VendorID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   AccountNumber VARCHAR(15) NOT NULL UNIQUE,
@@ -32,19 +39,25 @@ CREATE TABLE Vendor (
   PreferredVendorStatus TINYINT(1) NOT NULL DEFAULT 1,
   ActiveFlag TINYINT(1) NOT NULL DEFAULT 1,
   PurchasingWebServiceURL VARCHAR(255) DEFAULT NULL,
-  ModifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  ModifiedDate DATETIME NOT NULL 
+    DEFAULT CURRENT_TIMESTAMP 
+    ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (VendorID)
 ) ENGINE=InnoDB;
 
+-- 6) Create ShipMethod table (no FKs)
 CREATE TABLE ShipMethod (
   ShipMethodID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   Name VARCHAR(50) NOT NULL UNIQUE,
   ShipBase DECIMAL(10,2) NOT NULL,
   ShipRate DECIMAL(10,2) NOT NULL,
-  ModifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  ModifiedDate DATETIME NOT NULL 
+    DEFAULT CURRENT_TIMESTAMP 
+    ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (ShipMethodID)
 ) ENGINE=InnoDB;
 
+-- 7) Create PurchaseOrderHeader table (no FKs)
 CREATE TABLE PurchaseOrderHeader (
   PurchaseOrderID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   RevisionNumber TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -61,18 +74,14 @@ CREATE TABLE PurchaseOrderHeader (
   ModifiedDate DATETIME NOT NULL 
     DEFAULT CURRENT_TIMESTAMP 
     ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (PurchaseOrderID),
-  CONSTRAINT fk_POHeader_Employee
-    FOREIGN KEY (EmployeeID) REFERENCES Employee(EmployeeID),
-  CONSTRAINT fk_POHeader_Vendor
-    FOREIGN KEY (VendorID) REFERENCES Vendor(VendorID),
-  CONSTRAINT fk_POHeader_ShipMethod
-    FOREIGN KEY (ShipMethodID) REFERENCES ShipMethod(ShipMethodID)
+  PRIMARY KEY (PurchaseOrderID)
 ) ENGINE=InnoDB;
 
+-- 8) Create PurchaseOrderDetail table (no FKs)
+-- including the 'DueDate' column so it matches your CSV's 11 columns
 CREATE TABLE PurchaseOrderDetail (
-  PurchaseOrderDetailID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   PurchaseOrderID INT UNSIGNED NOT NULL,
+  PurchaseOrderDetailID INT UNSIGNED NOT NULL,
   ProductID INT UNSIGNED NOT NULL,
   OrderQty INT NOT NULL,
   UnitPrice DECIMAL(10,2) NOT NULL,
@@ -80,36 +89,9 @@ CREATE TABLE PurchaseOrderDetail (
   ReceivedQty INT NOT NULL DEFAULT 0,
   RejectedQty INT NOT NULL DEFAULT 0,
   StockedQty INT NOT NULL DEFAULT 0,
-  ModifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (PurchaseOrderDetailID),
-  -- Foreign keys:
-  CONSTRAINT fk_PODetail_POHeader
-    FOREIGN KEY (PurchaseOrderID) REFERENCES PurchaseOrderHeader(PurchaseOrderID)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_PODetail_Product
-    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
-) ENGINE=InnoDB;
-
-CREATE TABLE ProductVendor (
-  ProductVendorID INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  ProductID INT UNSIGNED NOT NULL,
-  VendorID INT UNSIGNED NOT NULL,
-  AverageLeadTime INT NOT NULL DEFAULT 0,
-  StandardPrice DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-  LastReceiptCost DECIMAL(10,2) DEFAULT NULL,
-  LastReceiptDate DATETIME DEFAULT NULL,
-  MinOrderQty INT NOT NULL DEFAULT 0,
-  MaxOrderQty INT NOT NULL DEFAULT 0,
-  OnOrderQty INT NOT NULL DEFAULT 0,
-  ModifiedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (ProductVendorID),
-  -- Ensure each (Product, Vendor) pair is unique
-  UNIQUE KEY uq_ProductVendor (ProductID, VendorID),
-  -- Foreign keys:
-  CONSTRAINT fk_ProductVendor_Product
-    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_ProductVendor_Vendor
-    FOREIGN KEY (VendorID) REFERENCES Vendor(VendorID)
-    ON DELETE CASCADE
+  DueDate DATETIME NOT NULL,
+  ModifiedDate DATETIME NOT NULL 
+    DEFAULT CURRENT_TIMESTAMP 
+    ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (PurchaseOrderID, PurchaseOrderDetailID)
 ) ENGINE=InnoDB;
