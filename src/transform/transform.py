@@ -1,19 +1,18 @@
 # src/transform/transform.py
+
 import pandas as pd
 
 def transform_product(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Product.csv -> Product table
+    Product.csv -> product table
     Columns: ProductID, Name, ProductNumber, ListPrice, ModifiedDate
     """
     df.columns = [
-        "ProductID", "Name", "ProductNumber", "ListPrice",
-        "ModifiedDate"
+        "ProductID", "Name", "ProductNumber", "ListPrice", "ModifiedDate"
     ]
     df.fillna(0, inplace=True)
     print("Product transformed successfully.")
     return df
-
 
 def transform_vendor(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -31,7 +30,6 @@ def transform_vendor(df: pd.DataFrame) -> pd.DataFrame:
     print("Vendor transformed successfully.")
     return df
 
-
 def transform_shipmethod(df: pd.DataFrame) -> pd.DataFrame:
     """
     ShipMethod.csv -> ShipMethod table
@@ -43,7 +41,6 @@ def transform_shipmethod(df: pd.DataFrame) -> pd.DataFrame:
     df.fillna(0, inplace=True)
     print("ShipMethod transformed successfully.")
     return df
-
 
 def transform_purchaseorderheader(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -61,23 +58,21 @@ def transform_purchaseorderheader(df: pd.DataFrame) -> pd.DataFrame:
     print("PurchaseOrderHeader transformed successfully.")
     return df
 
-
 def transform_purchaseorderdetail(df: pd.DataFrame) -> pd.DataFrame:
     """
     PurchaseOrderDetail.csv -> PurchaseOrderDetail table
-    Columns: PurchaseOrderDetailID, PurchaseOrderID, ProductID, OrderQty,
+    Columns: PurchaseOrderID, PurchaseOrderDetailID, ProductID, OrderQty,
              UnitPrice, LineTotal, ReceivedQty, RejectedQty, StockedQty,
-             ModifiedDate
+             DueDate, ModifiedDate
     """
     df.columns = [
-        "PurchaseOrderDetailID", "PurchaseOrderID", "ProductID", "OrderQty",
+        "PurchaseOrderID", "PurchaseOrderDetailID", "ProductID", "OrderQty",
         "UnitPrice", "LineTotal", "ReceivedQty", "RejectedQty", "StockedQty",
-        "ModifiedDate"
+        "DueDate", "ModifiedDate"
     ]
     df.fillna(0, inplace=True)
     print("PurchaseOrderDetail transformed successfully.")
     return df
-
 
 def transform_all_data(dataframes: dict) -> dict:
     """
@@ -88,7 +83,6 @@ def transform_all_data(dataframes: dict) -> dict:
     transformed = {}
 
     for filename, df in dataframes.items():
-        # Convert filename to lowercase for easier matching
         fname_lower = filename.lower()
 
         if fname_lower == "product.csv":
@@ -102,8 +96,6 @@ def transform_all_data(dataframes: dict) -> dict:
         elif fname_lower == "purchaseorderdetail.csv":
             transformed[filename] = transform_purchaseorderdetail(df)
         else:
-            # If we have a CSV that doesn't match these known filenames,
-            # we leave it as-is.
             print(f"No specific transform function for {filename}, leaving as-is.")
             transformed[filename] = df
 

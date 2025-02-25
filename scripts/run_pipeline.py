@@ -11,16 +11,16 @@ def main():
     # 1) Extract
     dataframes = extract_all_data()
     print("Extraction complete. DataFrames keys:", dataframes.keys())
-
     # 2) Transform
-    transformed_data = transform_all_data(dataframes)
-    print("Transformation complete.")
+    transformed_data = transform_all_data(all_data)
 
     # 3) Load
     for filename, df in transformed_data.items():
-        # Determine the correct MySQL table name, then call load_data_to_mysql
-        # ...
-        pass
+        # e.g. "Customer.csv" -> "Customer"
+        table_name = filename.replace(".csv", "")
+        load_data_to_mysql(df, table_name)
+
+    print("ETL pipeline completed successfully.")
 
 if __name__ == "__main__":
-    main()
+    run_etl()

@@ -14,12 +14,7 @@ def load_data_to_mysql(df: pd.DataFrame, table_name: str) -> None:
 
     engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}/{dbname}")
 
-    with engine.begin() as connection:
-        # Disable foreign key checks to allow dropping of referenced tables
-        connection.execute(text("SET FOREIGN_KEY_CHECKS=0"))
-        # "replace" overwrites existing table. Use "append" if you want to keep old data.
-        df.to_sql(table_name, con=connection, if_exists="replace", index=False)
-        # Re-enable foreign key checks after the table has been replaced
-        connection.execute(text("SET FOREIGN_KEY_CHECKS=1"))
-    
+
+    # "replace" overwrites existing table. Use "append" if you want to keep old data
+    df.to_sql(table_name, con=engine, if_exists="replace", index=False)
     print(f"Loaded '{table_name}' into database '{dbname}' successfully.")

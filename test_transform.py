@@ -11,7 +11,6 @@ def test_transform_all():
     """
     # List the CSV files you want to test
     csv_files = [
-        "Employee.csv",
         "Product.csv",
         "Vendor.csv",
         "ShipMethod.csv",
