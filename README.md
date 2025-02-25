@@ -1,4 +1,4 @@
-# AdventureWorks507 ETL Pipeline
+# AdventureWorks Business507 ETL Pipeline
 
 This repository provides a fully functional Extract → Transform → Load (ETL) pipeline for AdventureWorks data. It downloads CSV files from GitHub, transforms them using Python and pandas, and then loads the data into a MySQL database (local or AWS RDS).
 
