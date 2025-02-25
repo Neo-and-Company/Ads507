@@ -75,8 +75,8 @@ AdventureWorks507/
 
 1. **Clone the Repository:**
    ```
-   git clone https://github.com/dnguyen-1/AdventureWorks507.git
-   cd AdventureWorks507
+   git clone https://github.com/Neo-and-Company/Ads507
+   cd business_db
    ```
 
 2. **Install Dependencies:**
@@ -92,10 +92,10 @@ AdventureWorks507/
 Configure your database credentials by setting the following environment variables:
 
 ```bash
-export RDS_USER="your_username"
-export RDS_PASS="your_password"
-export RDS_HOST="your_host"
-export RDS_DBNAME="your_database"
+export RDS_USER="Ads507"
+export RDS_PASS="Gabrielleo24"
+export RDS_HOST="team-shared-mysql.cjwa24wuisi8.us-east-1.rds.amazonaws.com"
+export RDS_DBNAME="business_db"
 ```
 
 Alternatively, you can use a `.env` file along with python-dotenv.
@@ -118,8 +118,8 @@ The script will:
 
 Console logs will display progress messages similar to:
 ```
-Extracted Customer.csv: shape = (1000, 7)
-Extracted Employee.csv: shape = (290, 16)
+Extracted Customer.csv: shape = (201, 7)
+Extracted Employee.csv: shape = (201, 6)
 ...
 Loaded 'Customer' into database 'AdventureSales' successfully.
 ...
