@@ -1,11 +1,16 @@
+# src/extract/extract.py
+
 import requests
 import pandas as pd
 from io import StringIO
 
 def fetch_csv_from_github(filename: str) -> pd.DataFrame:
     """
-    Fetches a tab-delimited CSV from your GitHub AdventureWorks507 data folder
+    Fetches a tab-delimited CSV from your GitHub Ads507 data folder
     and returns a pandas DataFrame.
+
+    If your CSV files are actually comma-delimited, you can remove
+    the 'delimiter="\\t"' or replace it with the appropriate delimiter.
     """
     base_url = "https://media.githubusercontent.com/media/Neo-and-Company/Ads507/refs/heads/main/data/"
     url = base_url + filename
@@ -16,22 +21,27 @@ def fetch_csv_from_github(filename: str) -> pd.DataFrame:
     df = pd.read_csv(StringIO(response.text), delimiter='\t')
     return df
 
-# List all the CSV filenames you want to extract
+# List of CSV filenames to extract from the GitHub data folder
 CSV_FILES = [
-    "Employee.csv",
     "PurchaseOrderDetail.csv",
     "PurchaseOrderHeader.csv",
     "ShipMethod.csv",
     "Product.csv",
-    "Vendor.csv",
-    "Employee.csv"
-    
+    "ProductVendor.csv",
+    "Vendor.csv"
 ]
 
 def extract_all_data() -> dict:
     """
-    Fetches each CSV from GitHub and stores them in a dictionary of DataFrames.
-    Returns a dict: { 'Customer.csv': DataFrame, 'Employee.csv': DataFrame, ... }
+    Fetches each CSV file from GitHub (based on CSV_FILES)
+    and returns a dictionary of DataFrames keyed by filename.
+
+    Example return:
+    {
+      "PurchaseOrderDetail.csv": <DataFrame>,
+      "PurchaseOrderHeader.csv": <DataFrame>,
+      ...
+    }
     """
     dataframes = {}
     for file_name in CSV_FILES:
