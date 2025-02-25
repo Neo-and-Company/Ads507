@@ -10,7 +10,7 @@
             "port": 3306,
             "driver": "MySQL",
             "name": "Final_Ads507",
-            "database": "AdventureSales1",
+            "database": "business_db",
             "username": "Ads507"
         }
     ]
